@@ -39,18 +39,19 @@ class(activity$date)
 ### II. What is the mean total number of steps taken per day?  
 
 **1. Calculate the total number of steps taken each day.** 
-Use dplyr package, group by date, then summarize by taking the sum for each date after removing NAs.
+Use dplyr package, group by date, then summarize by taking the sum for each date after removing NAs. Ignore NAs using na.omit() e.g. 2012-10-01 will not be in steps_t data frame.  
 
 ```{r}
 #load package
 library(dplyr)
 #calculate sum of steps
-steps_t <- activity %>% 
+steps_t <- activity %>%
+     na.omit %>% 
      group_by(date) %>% 
      summarise(total_steps = sum(steps, na.rm = TRUE))
 ```
 
-- steps_t data frame has 61 observations and 2 variables
+- steps_t data frame has 53 observations and 2 variables
 
 **2. Make a histogram** of the total number of steps taken each day, use ggplot2 package.
 
@@ -76,10 +77,11 @@ total_mm1
 
 **1. Make a time series plot** (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
-1.a. Average number of steps for each 5 minute interval across all days using dplyr.  
+1.a. Average number of steps for each 5 minute interval across all days using dplyr. Ignore NAs using na.omit().  
 
 ```{r}
 steps_av <- activity %>% 
+     na.omit %>% 
      group_by(interval) %>% 
      summarise(average_steps = mean(steps, na.rm = TRUE))
 ```
@@ -131,10 +133,11 @@ e. bind activity_na2 to this data frame to create a new data frame with imputed 
 
 **3. Create new data frame**  
 
-3.a. Calculate median steps for each interval
+3.a. Calculate median steps for each interval. Ignore rows with missing values using na.omit().
 
 ```{r}
 steps_med <- activity %>% 
+     na.omit %>% 
      group_by(interval) %>% 
      summarise(median_steps = median(steps, na.rm = TRUE))
 ```
@@ -215,8 +218,8 @@ total_mm2
 #print mean and median before imputing
 total_mm1
 ```
-- the median of imputed and non-imputed data sets were the same (10395 steps)  
-- the mean after imputing was larger (9503) than the mean before imputing (9354)
+- the median of imputed data was lower at 10395 compared to the original data at 10765  
+- the mean after imputing was smaller (9503) than the mean before imputing (10766)
 
 ### V. Are there differences in activity patterns between weekdays and weekends?
 
